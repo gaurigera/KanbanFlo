@@ -1,0 +1,3 @@
+[submodule "client"]
+	path = client
+	url = /home/gauri/Documents/projects/trello-like-app/client
