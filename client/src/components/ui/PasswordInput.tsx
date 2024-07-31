@@ -1,33 +1,39 @@
-"use client"
+"use client";
 
 import React from "react";
 import { Input } from "@nextui-org/react";
-import { EyeFilledIcon } from "../components/ui/icons/EyeFilledIcon";
-import { EyeSlashFilledIcon } from "../components/ui/icons/EyeSlashFilledIcon";
+import { EyeFilledIcon } from "./icons/EyeFilledIcon";
+import { EyeSlashFilledIcon } from "./icons/EyeSlashFilledIcon";
 
-export default function PasswordInput() {
-  const [isVisible, setIsVisible] = React.useState(false);
 
-  const toggleVisibility = () => setIsVisible(!isVisible);
+export const PasswordInput = React.forwardRef<HTMLInputElement>(
+  (props, ref) => {
+    const [isVisible, setIsVisible] = React.useState(false);
+    const toggleVisibility = () => setIsVisible(!isVisible);
 
-  return (
-    <Input
-      placeholder="Enter your password"
-      endContent={
-        <button
-          className="focus:outline-none"
-          type="button"
-          onClick={toggleVisibility}
-          aria-label="toggle password visibility"
-        >
-          {isVisible ? (
-            <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-          ) : (
-            <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-          )}
-        </button>
-      }
-      type={isVisible ? "text" : "password"}
-    />
-  );
-}
+    return (
+      <Input
+        placeholder="Enter your password"
+        endContent={
+          <button
+            className="focus:outline-none"
+            type="button"
+            onClick={toggleVisibility}
+            aria-label="toggle password visibility"
+          >
+            {isVisible ? (
+              <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+            ) : (
+              <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+            )}
+          </button>
+        }
+        type={isVisible ? "text" : "password"}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
+
+PasswordInput.displayName = "PasswordInput";

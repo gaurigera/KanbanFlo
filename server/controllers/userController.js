@@ -19,7 +19,7 @@ const loginUser = expressAsyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(404);
-    throw new Error("User does not exist");
+    throw new Error("Required fields are empty");
   }
 
   try {

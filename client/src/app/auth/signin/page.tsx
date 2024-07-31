@@ -1,4 +1,4 @@
-import PasswordInput from "@/ui/PasswordInput";
+import PasswordInput from "@/components/ui/PasswordInput";
 import { Button, Input, Link } from "@nextui-org/react";
 export default function Signin() {
   return (
