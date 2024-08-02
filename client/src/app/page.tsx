@@ -1,11 +1,6 @@
-import AddTaskItem from "@/components/addTaskItem";
-import TaskItem from "@/components/taskItem";
-
-export default function Home() {
+export default function App() {
   return (
     <>
-    <TaskItem />
-    <AddTaskItem />
     </>
   );
 }

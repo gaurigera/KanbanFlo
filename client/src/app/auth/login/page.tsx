@@ -8,11 +8,14 @@ interface LoginValues {
 import {PasswordInput} from "@/components/ui/PasswordInput";
 import saveUserTokens from "@/utils/auth/saveUserToken";
 import { Button, Input, Link } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 
 export default function Login() {
   const methods = useForm<LoginValues>();
+  
   const { register, formState } = methods;
+  const router = useRouter()
 
   const onSubmit = async (values: LoginValues) => {    
     const API_BASE = `${process.env.NEXT_PUBLIC_API_URL}/user/login`;
@@ -27,6 +30,8 @@ export default function Login() {
     const data = await res.json();
 
     saveUserTokens(data)
+
+    router.push("/home")
   };
 
   return (
