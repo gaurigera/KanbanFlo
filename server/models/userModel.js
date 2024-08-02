@@ -11,6 +11,9 @@ const userSchema = mongoose.Schema(
       required: [true, "Please add email"],
       unique: [true, "This email is already taken"],
     },
+    phone: {
+      type: Number,
+    },
     password: {
       type: String,
       required: [true, "Please add password"],
