@@ -7,7 +7,7 @@ import { ClockIcon } from "./ui/icons/ClockIcon";
 export default function TaskItem() {
   return (
     <>
-      <div className="max-w-64 space-y-1.5 p-3 bg-gray-50 border-2 rounded-lg m-2">
+      <div className="max-w-64 space-y-1.5 p-3 bg-gray-50 border-2 rounded-lg m-2" draggable="true">
         <p>Implement User Authentication</p>
         <p className="text-xs">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis

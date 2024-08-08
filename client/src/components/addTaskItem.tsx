@@ -1,13 +1,21 @@
 import { Button, Input } from "@nextui-org/react";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import {FrameIcon} from "./ui/icons/FrameIcon"
+import { FrameIcon } from "./ui/icons/FrameIcon";
 import { PriorityIcon } from "./ui/icons/PriorityIcon";
+import React from "react";
 
-export default function AddTaskItem() {
+interface AddTaskItemProps {
+  // Define the props interface
+  title: string;
+}
+
+export default function AddTaskItem(Task: AddTaskItemProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button endContent={"+"}>Create New Task</Button>
+        <Button endContent={<span>+</span>} className="bg-neutral-50">
+          {Task.title}
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <>
