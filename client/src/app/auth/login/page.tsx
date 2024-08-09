@@ -5,7 +5,7 @@ interface LoginValues {
   password: String;
 }
 
-import {PasswordInput} from "@/components/ui/PasswordInput";
+import {PasswordInput} from "@/components/ui/passwordInput";
 import saveUserTokens from "@/utils/auth/saveUserToken";
 import { Button, Input, Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
