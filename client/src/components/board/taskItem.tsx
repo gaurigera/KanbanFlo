@@ -1,7 +1,7 @@
 "use client";
 
 import { Chip } from "@nextui-org/react";
-import { ClockIcon } from "./ui/icons/ClockIcon";
+import { ClockIcon } from "../ui/icons/ClockIcon";
 import {
   Draggable,
   DraggableProvided,
@@ -15,7 +15,7 @@ export default function TaskItem() {
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
         <div
           className={clsx(
-            "max-w-72 space-y-1.5 p-3 bg-gray-50 border-2 rounded-lg",
+            "max-w-72 space-y-1.5 p-3 bg-white border-1 rounded-lg",
             snapshot.isDragging && "border-2 border-blue-300"
           )}
           ref={provided.innerRef}

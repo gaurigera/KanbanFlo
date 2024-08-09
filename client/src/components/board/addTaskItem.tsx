@@ -1,19 +1,23 @@
 import { Button, Input } from "@nextui-org/react";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
-import { FrameIcon } from "./ui/icons/FrameIcon";
-import { PriorityIcon } from "./ui/icons/PriorityIcon";
+import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { FrameIcon } from "../ui/icons/FrameIcon";
+import { PriorityIcon } from "../ui/icons/PriorityIcon";
 import React from "react";
+import clsx from "clsx";
 
 interface AddTaskItemProps {
-  // Define the props interface
   title: string;
+  className: String;
 }
 
 export default function AddTaskItem(Task: AddTaskItemProps) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button endContent={<span>+</span>} className="bg-neutral-50">
+        <Button
+          startContent={<span>+</span>}
+          className={clsx("bg-white border-1", Task.className)}
+        >
           {Task.title}
         </Button>
       </SheetTrigger>

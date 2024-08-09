@@ -1,10 +1,12 @@
-import AddTaskItem from "@/components/addTaskItem";
+import AddTaskItem from "@/components/board/addTaskItem";
 import Board from "@/components/board/board";
 
 export default function home() {
   return (
     <>
-      <AddTaskItem title={"Add New Task"} />
+      <section className="w-full flex">
+        <AddTaskItem title={"Add New Task"} className={`ml-auto`} />
+      </section>
       <Board />
     </>
   );

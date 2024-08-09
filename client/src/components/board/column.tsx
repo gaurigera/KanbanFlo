@@ -8,9 +8,10 @@ import {
 } from "@hello-pangea/dnd";
 import clsx from "clsx";
 import * as React from "react";
-import TaskItem from "../taskItem";
+import TaskItem from "../board/taskItem";
 import { Chip } from "@nextui-org/react";
 import { Dot } from "lucide-react";
+import AddTaskItem from "./addTaskItem";
 
 export default function Column() {
   return (
@@ -18,7 +19,7 @@ export default function Column() {
       <Draggable draggableId="a" index={1}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
           <div
-            className={clsx("h-full space-y-2 p-2", snapshot.isDragging && "border-2 border-rose-50")}
+            className={clsx("space-y-2 p-2", snapshot.isDragging && "border-2 border-rose-50")}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -33,7 +34,7 @@ export default function Column() {
                 return (
                   <div
                     className={clsx(
-                      "h-full",
+                      "space-y-2",
                       snapshot.isDraggingOver && "border-2 border-rose-300"
                     )}
                     ref={provided.innerRef}
@@ -45,6 +46,9 @@ export default function Column() {
                 );
               }}
             </Droppable>
+            <>
+            <AddTaskItem className={''} title="Add New"/>
+            </>
           </div>
         )}
       </Draggable>
