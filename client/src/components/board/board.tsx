@@ -4,9 +4,11 @@ import {
   DragDropContext,
   Droppable,
   DroppableProvided,
+  DroppableStateSnapshot,
   DropResult,
 } from "@hello-pangea/dnd";
 import Column from "./column";
+import clsx from "clsx";
 
 export default function Board() {
   const onDragEnd = (result: DropResult): void => {
@@ -16,11 +18,13 @@ export default function Board() {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="board" type="COLUMN" direction="horizontal">
-        {(provided: DroppableProvided) => (
+        {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => (
           <section
-            className="w-full h-full bg-red-600 flex"
+            className={clsx("w-full h-5/6 flex")}
             ref={provided.innerRef}
+            {...provided.droppableProps}
           >
+            {provided.placeholder}
             <Column />
           </section>
         )}

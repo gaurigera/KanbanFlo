@@ -15,7 +15,7 @@ export default function TaskItem() {
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
         <div
           className={clsx(
-            "max-w-64 space-y-1.5 p-3 bg-gray-50 border-2 rounded-lg m-2",
+            "max-w-72 space-y-1.5 p-3 bg-gray-50 border-2 rounded-lg",
             snapshot.isDragging && "border-2 border-blue-300"
           )}
           ref={provided.innerRef}
