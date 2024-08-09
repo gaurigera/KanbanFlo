@@ -18,10 +18,12 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add password"],
     },
-    tasks: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }],
+    projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
   },
   {
     timestamps: true,
@@ -29,4 +31,4 @@ const userSchema = mongoose.Schema(
 );
 
 const User = mongoose.model("User", userSchema);
-module.exports = User
+module.exports = User;
