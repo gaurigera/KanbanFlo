@@ -5,3 +5,16 @@ exports.constants = {
   NOT_FOUND: 404,
   SERVER_ERROR: 500
 };
+
+exports.ROLES = {
+  Admin: "ADMIN",
+  Edit: "EDITOR",
+  Comment: "COMMENTOR",
+  View: "VIEWER",
+};
+
+exports.PRIORITY = {
+  Low: "LOW",
+  Medium: "MEDIUM",
+  High: "HIGH",
+};

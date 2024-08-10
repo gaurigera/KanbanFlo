@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const { PRIORITY } = require("../constants");
+
 const taskSchema = new mongoose.Schema(
   {
     title: {
@@ -11,7 +13,7 @@ const taskSchema = new mongoose.Schema(
     },
     priority: {
       type: String,
-      enum: ["low", "medium", "high"],
+      enum: [PRIORITY.Low, PRIORITY.Medium, PRIORITY.High],
     },
     startDate: {
       type: Date,
@@ -30,8 +32,8 @@ const taskSchema = new mongoose.Schema(
         },
         date: {
           type: Date,
-          default: Date.now
-        }
+          default: Date.now,
+        },
       },
     ],
   },

@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const { ROLES } = require("../constants");
+
 const ProjectSchema = mongoose.Schema({
   name: {
     type: String,
@@ -12,8 +14,8 @@ const ProjectSchema = mongoose.Schema({
     {
       position: Number,
       name: {
-        type: String, 
-        unique: [true, "Name of the Kanban column should be unique"]
+        type: String,
+        unique: [true, "Name of the Kanban column should be unique"],
       },
       tasks: [
         {
@@ -32,7 +34,7 @@ const ProjectSchema = mongoose.Schema({
       },
       role: {
         type: String,
-        enum: ["view", "comment", "edit"],
+        enum: [ROLES.Admin, ROLES.Comment, ROLES.Edit, ROLES.View],
       },
     },
   ],
