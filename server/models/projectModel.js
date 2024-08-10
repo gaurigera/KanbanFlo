@@ -7,16 +7,33 @@ const ProjectSchema = mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, "Please add short description"],
   },
   columns: [
     {
-      name: String,
-      tasks: [{
+      position: Number,
+      name: {
+        type: String, 
+        unique: [true, "Name of the Kanban column should be unique"]
+      },
+      tasks: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Task",
+        },
+      ],
+      theme: String,
+    },
+  ],
+  collaborators: [
+    {
+      user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Task",
-      }],
-      theme: String
+        ref: "User",
+      },
+      role: {
+        type: String,
+        enum: ["view", "comment", "edit"],
+      },
     },
   ],
 });

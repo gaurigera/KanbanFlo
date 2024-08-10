@@ -18,12 +18,6 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add password"],
     },
-    projects: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Project",
-      },
-    ],
   },
   {
     timestamps: true,

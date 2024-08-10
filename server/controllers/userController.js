@@ -106,16 +106,4 @@ const registerUser = expressAsyncHandler(async (req, res) => {
   res.json({ message: "Register User" });
 });
 
-const getUserTasks = expressAsyncHandler(async (req, res) => {
-  const _id = req.params.id;
-
-  const user = await User.findOne({ _id });
-
-  if(!user)
-      return res.status(400).json({ message: "User data unavailable" });
-  
-  res.status(200).json(user)
-
-});
-
-module.exports = { getUserInfo, loginUser, registerUser, getUserTasks };
+module.exports = { getUserInfo, loginUser, registerUser };

@@ -9,30 +9,16 @@ const taskSchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    status: {
-      type: String,
-      required: [true, "Please set status"],
-      enum: ["todo", "in progress", "under review", "finished"],
-    },
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
     },
-    deadline: {
+    startDate: {
       type: Date,
     },
-    assignees: [
-      {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-        role: {
-          type: String,
-          enum: ["view", "comment", "write"],
-        },
-      },
-    ],
+    endDate: {
+      type: Date,
+    },
     comments: [
       {
         by: {
@@ -42,6 +28,10 @@ const taskSchema = new mongoose.Schema(
         content: {
           type: String,
         },
+        date: {
+          type: Date,
+          default: Date.now
+        }
       },
     ],
   },
