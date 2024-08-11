@@ -109,7 +109,7 @@ export const dummyData: DummyData = [
             priority: "Medium",
             startDate: "2024-08-01T00:00:00.000Z",
             endDate: "2024-08-15T00:00:00.000Z",
-            position: 2,
+            position: 1,
             commentCount: 1,
             comments: [
               {

@@ -81,7 +81,7 @@ export default function Column(Details: ColumnProps) {
             >
               {Details.name}
             </Chip>
-            <Droppable droppableId={Details.columnDroppableId}>
+            <Droppable droppableId={Details.columnDroppableId} type="TASK">
               {(provided, snapshot) => {
                 return (
                   <div
@@ -93,15 +93,15 @@ export default function Column(Details: ColumnProps) {
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {provided.placeholder}
                     {Details.tasks.map((task, idx) => (
                       <TaskItem
-                        key={idx}
+                        key={task._id}
                         draggableId={task._id}
-                        index={task.position}
+                        index={idx}
                         {...task}
                       />
                     ))}
+                    {provided.placeholder}
                   </div>
                 );
               }}
