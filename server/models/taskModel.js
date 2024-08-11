@@ -21,6 +21,12 @@ const taskSchema = new mongoose.Schema(
     endDate: {
       type: Date,
     },
+    assignees: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     comments: [
       {
         by: {
@@ -39,8 +45,14 @@ const taskSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
+
+taskSchema.virtual("commentCount").get(function () {
+  return this.comments.length;
+});
 
 const Task = mongoose.model("Task", taskSchema);
 module.exports = Task;

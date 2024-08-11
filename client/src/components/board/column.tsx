@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Draggable,
   DraggableProvided,
@@ -11,44 +9,103 @@ import * as React from "react";
 import TaskItem from "../board/taskItem";
 import { Chip } from "@nextui-org/react";
 import { Dot } from "lucide-react";
-import AddTaskItem from "./addTaskItem";
+import { Column as ColumnType } from "@/utils/dummyData";
 
-export default function Column() {
+
+interface ColumnProps extends ColumnType{
+  columnDraggableId: string;
+  columnDroppableId: string;
+  index: number;
+}
+
+type Theme = {
+  chipBg?: string;
+  dotBg?: string;
+  borderColor?: string;
+};
+
+type ThemeMap = {
+  [key: string]: Theme;
+};
+
+const themeMap: ThemeMap = {
+  blue: {
+    chipBg: "bg-blue-100",
+    dotBg: "text-blue-400",
+    borderColor: "border-2 border-blue-300",
+  },
+  rose: {
+    chipBg: "bg-rose-100",
+    dotBg: "text-rose-500",
+    borderColor: "border-2 border-rose-300",
+  },
+  yellow: {
+    chipBg: "bg-yellow-100",
+    dotBg: "text-yellow-500",
+    borderColor: "border-2 border-yellow-300",
+  },
+  orange: {
+    chipBg: "bg-orange-100",
+    dotBg: "text-orange-500",
+    borderColor: "border-2 border-orange-400",
+  },
+  purple: {
+    chipBg: "bg-purple-100",
+    dotBg: "text-purple-500",
+    borderColor: "border-2 border-purple-400",
+  },
+};
+
+export default function Column(Details: ColumnProps) {
   return (
     <>
-      <Draggable draggableId="a" index={1}>
+      <Draggable draggableId={Details.columnDraggableId} index={Details.index}>
         {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
           <div
-            className={clsx("space-y-2 p-2", snapshot.isDragging && "border-2 border-rose-50")}
+            className={clsx(
+              "space-y-2 p-2",
+              snapshot.isDragging && themeMap[Details.theme]["borderColor"]
+            )}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
           >
-            <>
-              <Chip className="bg-rose-100" startContent={<Dot className="text-rose-500" strokeWidth={`8px`} />}>
-                Todo
-              </Chip>
-            </>
-            <Droppable droppableId="a">
+            <Chip
+              className={clsx(themeMap[Details.theme]["chipBg"])}
+              startContent={
+                <Dot
+                  className={clsx(themeMap[Details.theme]["dotBg"])}
+                  strokeWidth={`8px`}
+                />
+              }
+            >
+              {Details.name}
+            </Chip>
+            <Droppable droppableId={Details.columnDroppableId}>
               {(provided, snapshot) => {
                 return (
                   <div
                     className={clsx(
                       "space-y-2",
-                      snapshot.isDraggingOver && "border-2 border-rose-300"
+                      snapshot.isDraggingOver &&
+                        themeMap[Details.theme]["borderColor"]
                     )}
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
                     {provided.placeholder}
-                    <TaskItem />
+                    {Details.tasks.map((task, idx) => (
+                      <TaskItem
+                        key={idx}
+                        draggableId={task._id}
+                        index={task.position}
+                        {...task}
+                      />
+                    ))}
                   </div>
                 );
               }}
             </Droppable>
-            <>
-            <AddTaskItem className={''} title="Add New"/>
-            </>
           </div>
         )}
       </Draggable>

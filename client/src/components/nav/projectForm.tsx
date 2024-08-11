@@ -25,17 +25,19 @@ export default function ProjectForm() {
     if (inputValue.trim()) {
       saveProject();
     }
+    setShowInput(false)
   };
 
   const saveProject = () => {
     setProjects((prev) => [...prev, inputValue.trim()]);
     setShowInput(false);
+    setInputValue("")
   };
 
   return (
     <section>
       <div className="flex justify-between">
-        <h1 className="font-bold">Projects</h1>
+        <h1>Projects</h1>
         <button onClick={handleClick}>+</button>
       </div>
       <>
