@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
-const { ROLES } = require("../constants");
+const { ROLES, THEMES } = require("../constants");
 
 const ProjectSchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please add name"],
+    unique: [true, "Need to have unique project globally"],
   },
   description: {
     type: String,
@@ -23,7 +24,10 @@ const ProjectSchema = mongoose.Schema({
           ref: "Task",
         },
       ],
-      theme: String,
+      theme: {
+        type: String,
+        enum: [THEMES.blue, THEMES.purple, THEMES.yellow],
+      },
     },
   ],
   collaborators: [

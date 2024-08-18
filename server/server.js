@@ -12,13 +12,15 @@ const port = process.env.PORT || 5000;
 app.use(express.json())
 
 const corsOptions = {
-  origin: "http://localhost:3000", // Replace with your frontend's origin
+  origin: "http://localhost:3000", // Replace with frontend's origin
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Enable credentials (cookies, authorization headers)
 };
 app.use(cors(corsOptions))
-app.use("/api/tasks", require("./routes/taskRoutes"));
+app.use("/api/task", require("./routes/taskRoutes"));
 app.use("/api/user", require("./routes/userRoutes"));
+app.use("/api/project", require("./routes/projectRoutes"));
+
 app.use(errorHandler)
 
 app.listen(port, () => console.log(`Server is running on port ${port}`))

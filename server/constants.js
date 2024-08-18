@@ -18,3 +18,9 @@ exports.PRIORITY = {
   Medium: "MEDIUM",
   High: "HIGH",
 };
+
+exports.THEMES = {
+  purple: "purple",
+  yellow: "yellow",
+  blue: "blue"
+}

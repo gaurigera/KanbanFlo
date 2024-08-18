@@ -15,6 +15,10 @@ const taskSchema = new mongoose.Schema(
       type: String,
       enum: [PRIORITY.Low, PRIORITY.Medium, PRIORITY.High],
     },
+    status: {
+      type: String,
+      required: [true, "Status is required for a task"],
+    },
     startDate: {
       type: Date,
     },

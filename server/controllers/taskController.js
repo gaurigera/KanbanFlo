@@ -1,5 +1,6 @@
 const expressAsyncHandler = require("express-async-handler");
 const Task = require("../models/taskModel");
+const Project = require("../models/projectModel");
 
 /**
  * @desc Get all Tasks
@@ -12,27 +13,26 @@ const getTasks = expressAsyncHandler(async (req, res) => {
 
 /**
  * @desc Post Task
- * @route POST /api/tasks
+ * @route POST /api/task
  */
-const createTask = expressAsyncHandler(async (req, res) => {
-  console.log(req.body);
-  const { title, description, status, priority, deadline } = req.body;
-  if (!title || !description || !status) {
-    res.status(400);
-    throw new Error("All fields are required!");
-  }
 
+const addTask = expressAsyncHandler(async (req, res) => {
   try {
-    const task = await Task.create({
-      title,
-      description,
-      status,
-      priority,
-      deadline,
-    });
-    res.status(201).json(task);
+    const { projectId, columnId } = req.params;
+    const { title, description, priority, status } = req.body;
+
+    const project = await Project.findById(projectId);
+    const column = project.columns.id(columnId);
+
+    const task = await Task.create({ title, description, priority, status });
+
+    column.tasks.push(task);
+
+    await project.save();
+
+    res.status(201).json({ success: true });
   } catch (error) {
-    res.status(404);
+    res.status(401).json({ success: false });
   }
 });
 
@@ -41,12 +41,16 @@ const createTask = expressAsyncHandler(async (req, res) => {
  * @route GET /api/tasks/:id
  */
 const getTask = expressAsyncHandler(async (req, res) => {
-  const Task = await Task.findById(req.params.id);
-  if (!Task) {
-    res.status(404);
-    throw new Error("Task not found");
+  try {
+    const task = await Task.findById(req.params.id);
+    if (!task) {
+      res.status(404).json({ success: false });
+      throw new Error("Task not found");
+    }
+    res.status(200).json(task);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
   }
-  res.status(200).json(Task);
 });
 
 /**
@@ -64,7 +68,7 @@ const updateTask = expressAsyncHandler(async (req, res) => {
     new: true,
   });
 
-  res.status(200).json(updatedTask);
+  res.status(200).json({ success: true, updatedTask });
 });
 
 /**
@@ -72,26 +76,32 @@ const updateTask = expressAsyncHandler(async (req, res) => {
  * @route DELETE /api/Tasks/:id
  */
 const deleteTask = expressAsyncHandler(async (req, res) => {
-  const task = await Task.findById(req.params.id);
+  const { projectId, columnId, taskId } = req.params;
+
+  const task = await Task.findById(taskId);
   if (!task) {
     res.status(404);
     throw new Error("Task not found");
   }
 
-  
-  const deletedTask = await Task.findByIdAndDelete(req.params.id);
+  const project = await Project.findById(projectId);
+  const column = project.columns.id(columnId);
+
+  column.tasks.pull(task);
+
+  await project.save();
+
+  const deletedTask = await Task.findByIdAndDelete(taskId);
   if (deletedTask) {
-    // Check if deletion was successful 
-    res.status(200).json(deletedTask);
+    res.status(200).json({ success: true });
   } else {
-    // Handle unexpected deletion failure
     res.status(500).json({ message: "Failed to delete task" });
   }
 });
 
 module.exports = {
-  getTasks,
-  createTask,
+  getTask,
+  addTask,
   updateTask,
-  deleteTask
+  deleteTask,
 };
