@@ -1,3 +1,5 @@
+"use client";
+
 import { Chip } from "@nextui-org/react";
 import {
   Draggable,
@@ -8,14 +10,16 @@ import clsx from "clsx";
 import { MessageCircle, MoveRight } from "lucide-react";
 import React from "react";
 import TaskSheet from "./taskSheet";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 export interface TaskProps {
   _id: string;
   title: string;
   description: string;
   priority: string;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   commentCount: number;
   position: number;
 }
@@ -26,6 +30,20 @@ interface DraggableTaskProps extends TaskProps {
 }
 
 export default function TaskItem(Task: DraggableTaskProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const createQueryString = React.useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   return (
     <Draggable draggableId={Task.draggableId} index={Task.index}>
       {(provided: DraggableProvided, snapshot: DraggableStateSnapshot) => (
@@ -38,10 +56,12 @@ export default function TaskItem(Task: DraggableTaskProps) {
           {...provided.draggableProps}
           {...provided.dragHandleProps}
         >
-          <TaskSheet id={Task._id}>
-            <p className="font-semibold text-pretty">{Task.title}</p>
+          <TaskSheet>
+            <Link href={pathname + "?" + createQueryString("taskId", Task._id)}>
+              <p className="font-semibold text-pretty">{Task.title}</p>
+              <p className="text-xs">{Task.description}</p>
+            </Link>
           </TaskSheet>
-          <p className="text-xs">{Task.description}</p>
           <div className="flex justify-between">
             <Chip
               className={clsx(

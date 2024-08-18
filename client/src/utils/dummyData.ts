@@ -13,13 +13,13 @@ type Comment = {
 };
 
 // Task type
-type Task = {
+export type Task = {
   _id: string;
   title: string;
   description: string;
   priority: "Low" | "Medium" | "High";
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   position: number;
   commentCount: number;
   comments: Comment[];
@@ -50,9 +50,9 @@ type Collaborator = {
 export type Project = {
   _id: string;
   name: string;
-  description: string;
-  columns: Column[];
-  collaborators: Collaborator[];
+  description?: string;
+  columns?: Column[];
+  collaborators?: Collaborator[];
   createdAt: string;
   updatedAt: string;
 };
@@ -76,8 +76,8 @@ export const dummyData: DummyData = [
             title: "Design the homepage",
             description: "Create the design for the homepage",
             priority: "Low",
-            startDate: "2024-08-01T00:00:00.000Z",
-            endDate: "2024-08-08T00:00:00.000Z",
+            startDate: new Date("2024-08-01T00:00:00.000Z"),
+            endDate: new Date("2024-08-08T00:00:00.000Z"),
             position: 1,
             commentCount: 1,
             comments: [

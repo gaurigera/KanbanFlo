@@ -18,11 +18,9 @@ export default function Board(Project: Project) {
 
   React.useEffect(() => {
     setData(Project);
-  }, [Project]);
+  }, [Project, setData]);
 
-  React.useEffect(() => {
-    
-  }, [data])
+  React.useEffect(() => {}, [data]);
 
   const onDragEnd = (result: DropResult): void => {
     const { destination, draggableId, source, type } = result;
@@ -41,8 +39,8 @@ export default function Board(Project: Project) {
 
     if (type === "COLUMN") {
       const prevData = data;
-      const removedData = prevData.columns.splice(source.index, 1);
-      prevData.columns.splice(destination!!.index, 0, removedData[0]);
+      const removedData = prevData.columns!!.splice(source.index, 1);
+      prevData.columns!!.splice(destination!!.index, 0, removedData[0]);
 
       setData(prevData);
     }
@@ -50,25 +48,25 @@ export default function Board(Project: Project) {
     if (type === "TASK") {
       const prevData = data;
 
-      const oldColumnIndex = prevData.columns.findIndex(
+      const oldColumnIndex = prevData.columns!!.findIndex(
         (column) => column._id === source.droppableId
       );
-      const newColumnIndex = prevData.columns.findIndex(
+      const newColumnIndex = prevData.columns!!.findIndex(
         (column) => column._id === destination!!.droppableId
       );
 
-      const [removedData] = prevData.columns[oldColumnIndex].tasks.splice(
+      const [removedData] = prevData.columns!![oldColumnIndex].tasks.splice(
         source.index,
         1
       );
 
-      prevData.columns[newColumnIndex].tasks.splice(
+      prevData.columns!![newColumnIndex].tasks.splice(
         destination!!.index,
         0,
         removedData
       );
 
-      const updateColumns = prevData.columns.map((column) => ({
+      const updateColumns = prevData.columns!!.map((column) => ({
         _id: column._id,
         tasks: column.tasks.map((task, index) => ({
           _id: task._id,
@@ -91,15 +89,19 @@ export default function Board(Project: Project) {
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
-            {data.columns.map((column, idx) => (
-              <Column
-                columnDraggableId={column._id}
-                columnDroppableId={column._id}
-                index={idx}
-                key={column._id}
-                {...column}
-              />
-            ))}
+            {data.columns ? (
+              data.columns.map((column, idx) => (
+                <Column
+                  columnDraggableId={column._id}
+                  columnDroppableId={column._id}
+                  index={idx}
+                  key={column._id}
+                  {...column}
+                />
+              ))
+            ) : (
+              <></>
+            )}
             {provided.placeholder}
           </section>
         )}

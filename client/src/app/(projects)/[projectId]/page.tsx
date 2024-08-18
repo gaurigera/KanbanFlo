@@ -26,7 +26,10 @@ export default async function Home({
           <button className="px-2">
             <EditIcon width={20} />
           </button>
-          <Button startContent={<UserRoundPlusIcon width={10} />} className="bg-white border-1">
+          <Button
+            startContent={<UserRoundPlusIcon width={10} />}
+            className="bg-white border-1"
+          >
             Add Collaborators
           </Button>
           <TaskSheet title={"Add New Task"} />

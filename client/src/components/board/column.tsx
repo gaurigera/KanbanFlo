@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Draggable,
   DraggableProvided,
@@ -10,9 +12,12 @@ import TaskItem from "../board/taskItem";
 import { Chip } from "@nextui-org/react";
 import { Dot } from "lucide-react";
 import { Column as ColumnType } from "@/utils/dummyData";
+import TaskSheet from "./taskSheet";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { Button } from "../ui/button";
 
-
-interface ColumnProps extends ColumnType{
+interface ColumnProps extends ColumnType {
   columnDraggableId: string;
   columnDroppableId: string;
   index: number;
@@ -57,6 +62,14 @@ const themeMap: ThemeMap = {
 };
 
 export default function Column(Details: ColumnProps) {
+  const pathname = usePathname();
+
+  const createQueryString = React.useCallback((name: string, value: string) => {
+    const params = new URLSearchParams();
+    params.set(name, value);
+
+    return params.toString();
+  }, []);
   return (
     <>
       <Draggable draggableId={Details.columnDraggableId} index={Details.index}>
@@ -86,7 +99,7 @@ export default function Column(Details: ColumnProps) {
                 return (
                   <div
                     className={clsx(
-                      "space-y-2",
+                      "space-y-3 min-w-72",
                       snapshot.isDraggingOver &&
                         themeMap[Details.theme]["borderColor"]
                     )}
@@ -106,6 +119,17 @@ export default function Column(Details: ColumnProps) {
                 );
               }}
             </Droppable>
+            <div className="mt-5">
+              <TaskSheet id="">
+                <Link
+                  href={
+                    pathname + "?" + createQueryString("columnId", Details._id)
+                  }
+                >
+                  <Button variant="outline">Add New</Button>
+                </Link>
+              </TaskSheet>
+            </div>
           </div>
         )}
       </Draggable>
