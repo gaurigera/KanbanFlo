@@ -59,13 +59,13 @@ const loginUser = expressAsyncHandler(async (req, res) => {
  * @route GET /api/user/register
  */
 const registerUser = expressAsyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
+  const { name, email, username, password } = req.body;
+  if (!name || !email || !password || !username) {
     res.status(400);
     throw new Error("All fields are mandatory!");
   }
 
-  const userAvailable = await User.findOne({ email });
+  const userAvailable = await User.findOne({ username });
   if (userAvailable) {
     res.status(400);
     throw new Error("User already exists");
@@ -77,9 +77,10 @@ const registerUser = expressAsyncHandler(async (req, res) => {
   const user = await User.create({
     name,
     email,
+    username,
     password: hashedPass,
   });
-
+  
   if (user) {
     const payload = {
       user: {

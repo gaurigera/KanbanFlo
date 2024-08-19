@@ -7,6 +7,9 @@ const {
   updateProject,
   getProject,
   addColumn,
+  addCollaborators,
+  removeCollaborators,
+  getCollaborators,
 } = require("../controllers/projectController");
 
 router.route("/").post(createProject);
@@ -17,5 +20,10 @@ router
   .put(updateProject);
 
 router.route("/:projectId/column").patch(addColumn);
+router
+  .route("/:projectId/collab")
+  .get(getCollaborators)
+  .patch(addCollaborators)
+  .delete(removeCollaborators);
 
 module.exports = router;

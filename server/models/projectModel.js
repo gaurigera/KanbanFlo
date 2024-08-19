@@ -7,6 +7,7 @@ const ProjectSchema = mongoose.Schema({
     type: String,
     required: [true, "Please add name"],
     unique: [true, "Need to have unique project globally"],
+    trim: true
   },
   description: {
     type: String,

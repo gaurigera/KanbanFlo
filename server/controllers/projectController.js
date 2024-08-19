@@ -1,6 +1,8 @@
 const expressAsyncHandler = require("express-async-handler");
 const Project = require("../models/projectModel");
-const Task = require("../models/taskModel");
+const { THEMES } = require("../constants");
+const User = require("../models/userModel");
+const { default: mongoose } = require("mongoose");
 
 /**
  * @route /post/
@@ -9,7 +11,24 @@ const createProject = expressAsyncHandler(async (req, res) => {
   const { name } = req.body;
 
   try {
-    await Project.create({ name });
+    const project = await Project.create({ name });
+    await Project.findByIdAndUpdate(project.id, {
+      $push: {
+        columns: {
+          $each: [
+            { position: 1, name: "To Do", theme: THEMES.blue, tasks: [] },
+            {
+              position: 2,
+              name: "In Progress",
+              theme: THEMES.yellow,
+              tasks: [],
+            },
+            { position: 3, name: "Done", theme: THEMES.purple, tasks: [] },
+          ],
+        },
+      },
+    });
+
     res.status(200).json({ message: "Done" });
   } catch (error) {
     res.status(400).json({ message: error });
@@ -73,34 +92,97 @@ const addCollaborators = expressAsyncHandler(async (req, res) => {
   const { user, role } = req.body;
 
   try {
-    await Project.updateOne(
-      { _id: projectId },
-      { $push: { collaborators: { user, role } } }
-    ).exec();
+    const isUser = await User.findOne({ _id: user._id });
+    const project = await Project.findOne({ _id: projectId });
 
-    res.status(201);
+    if (!isUser || !project) {
+      res
+        .status(404)
+        .json({ success: false, message: "Unable to proceed the request" });
+    }
+
+    const collaboratorExists = project.collaborators.some(
+      (collaborator) => collaborator.user.toString() === user._id.toString()
+    );
+
+    if (!collaboratorExists) {
+      await Project.updateOne(
+        { _id: projectId },
+        { $push: { collaborators: { user, role } } }
+      ).exec();
+
+      res.status(201).json({ success: true });
+    } else {
+      res.sendStatus(304);
+    }
   } catch (error) {
-    res.status(404);
+    res.status(404).json({ success: false });
   }
 });
 
 /**
- * @route /delete/:projectId/:userId
+ * @route /get/:projectId/collab
+ */
+const getCollaborators = expressAsyncHandler(async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const ans = await Project.aggregate([
+      {
+        $match: { _id: new mongoose.Types.ObjectId(projectId) },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "collaborators.user",
+          foreignField: "_id",
+          as: "collaborators.user",
+        },
+      },
+    ]);
+
+    res
+      .status(201)
+      .json({ success: true, collaborators: ans[0].collaborators });
+  } catch (error) {
+    res.status(404).json({
+      error: "Unable to get collaborators.",
+    });
+  }
+});
+
+/**
+ * @route /delete/:projectId/collab
  *  */
 const removeCollaborators = expressAsyncHandler(async (req, res) => {
   try {
-    const project = { _id: req.params.projectId };
-    const collaborator = req.params.userId;
+    const { projectId } = req.params;
+    const { user } = req.body;
 
-    await Project.updateOne(project, {
-      $pull: { collaborators: collaborator },
-    }).exec();
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
+    // Find the collaborator index
+    const collaboratorIndex = project.collaborators.findIndex((collaborator) =>
+      collaborator.user.equals(user._id)
+    );
+
+    if (collaboratorIndex === -1) {
+      return res.status(404).json({ message: "Collaborator not found" });
+    }
+
+    // Remove the collaborator from the array
+    project.collaborators.splice(collaboratorIndex, 1);
+
+    await project.save();
 
     res.status(201).json({
       success: true,
     });
   } catch (error) {
-    res.status(401).json({
+    res.status(500).json({
       error: "Your request could not be processed. Please try again.",
     });
   }
@@ -169,4 +251,7 @@ module.exports = {
   getProject,
   addColumn,
   removeColumn,
+  addCollaborators,
+  removeCollaborators,
+  getCollaborators,
 };
