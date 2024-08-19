@@ -10,9 +10,10 @@ const {
   addCollaborators,
   removeCollaborators,
   getCollaborators,
+  getProjects,
 } = require("../controllers/projectController");
 
-router.route("/").post(createProject);
+router.route("/").post(createProject).get(getProjects);
 router
   .route("/:projectId")
   .get(getProject)

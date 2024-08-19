@@ -1,4 +1,4 @@
-import { Sidebar } from "@/components/nav/sidebar";
+import { Sidebar } from "@/app/(projects)/[projectId]/sidebar";
 
 export default function HomeLayout({
   children,

@@ -4,6 +4,11 @@ const { THEMES } = require("../constants");
 const User = require("../models/userModel");
 const { default: mongoose } = require("mongoose");
 
+const getProjects = expressAsyncHandler(async (req, res) => {
+  const projects = await Project.find();
+  res.status(200).json({ projects: projects });
+});
+
 /**
  * @route /post/
  */
@@ -21,9 +26,9 @@ const createProject = expressAsyncHandler(async (req, res) => {
     ];
 
     await project.save();
-    res.status(200).json({ message: "Done" });
+    res.status(200).json({ success: true, message: "Done" });
   } catch (error) {
-    res.status(400).json({ message: error });
+    res.status(400).json({ success: false, message: error });
   }
 });
 
@@ -246,4 +251,5 @@ module.exports = {
   addCollaborators,
   removeCollaborators,
   getCollaborators,
+  getProjects
 };

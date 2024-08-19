@@ -11,8 +11,8 @@ const UserData = {
   avatar: "https://avatars.githubusercontent.com/u/122551351?v=4",
 };
 
-const loadProfile = cache(async (userId?: string) => {
-  return UserData;
+const loadProfile = cache(async (userId?: string) => {  
+  return UserData
 });
 
 export async function Profile() {

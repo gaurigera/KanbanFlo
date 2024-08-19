@@ -35,9 +35,6 @@ export default function TaskSheet(task: AddTaskItemProps) {
   React.useEffect(() => {
     async function fetchTask() {
       const result = await getTask(searchParams.get("taskId"));
-
-      console.log(result);
-
       setTaskData(result);
     }
 

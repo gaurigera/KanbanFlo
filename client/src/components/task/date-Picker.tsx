@@ -14,36 +14,28 @@ import {
 import { Button } from "@nextui-org/react";
 
 interface DatePickerProps {
-  date?: Date;
+  date: Date;
 }
 
 export default function DatePicker(props?: DatePickerProps) {
-  const [date, setDate] = React.useState<Date>();
-
-  React.useEffect(() => {
-    if (props?.date) {
-      setDate(props?.date);
-    }
-  }, [props?.date]);
-
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           className={cn(
             "w-[200px] justify-between bg-white",
-            !date && "text-muted-foreground"
+            !props?.date && "text-muted-foreground"
           )}
         >
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {props?.date ? format(props?.date, "PPP") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={setDate}
-          initialFocus
+          selected={props?.date}
+          // onSelect={setDate}
+          // initialFocus
         />
       </PopoverContent>
     </Popover>

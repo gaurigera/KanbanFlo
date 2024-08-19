@@ -3,19 +3,9 @@ const Task = require("../models/taskModel");
 const Project = require("../models/projectModel");
 
 /**
- * @desc Get all Tasks
- * @route GET /api/Tasks
- */
-const getTasks = expressAsyncHandler(async (req, res) => {
-  const tasks = await Task.find();
-  res.status(200).json(tasks);
-});
-
-/**
  * @desc Post Task
  * @route POST /api/task
  */
-
 const addTask = expressAsyncHandler(async (req, res) => {
   try {
     const { projectId, columnId } = req.params;
