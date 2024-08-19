@@ -11,24 +11,16 @@ const createProject = expressAsyncHandler(async (req, res) => {
   const { name } = req.body;
 
   try {
-    const project = await Project.create({ name });
-    await Project.findByIdAndUpdate(project.id, {
-      $push: {
-        columns: {
-          $each: [
-            { position: 1, name: "To Do", theme: THEMES.blue, tasks: [] },
-            {
-              position: 2,
-              name: "In Progress",
-              theme: THEMES.yellow,
-              tasks: [],
-            },
-            { position: 3, name: "Done", theme: THEMES.purple, tasks: [] },
-          ],
-        },
-      },
-    });
+    const project = await Project();
 
+    project.name = name;
+    project.columns = [
+      { position: 1, name: "To Do", tasks: [], theme: THEMES.blue },
+      { position: 2, name: "In-Progress", tasks: [], theme: THEMES.yellow },
+      { position: 3, name: "Done", tasks: [], theme: THEMES.purple },
+    ];
+
+    await project.save();
     res.status(200).json({ message: "Done" });
   } catch (error) {
     res.status(400).json({ message: error });
@@ -39,7 +31,7 @@ const getProject = expressAsyncHandler(async (req, res) => {
   const { projectId } = req.params;
 
   try {
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId).populate("columns.tasks");
     res.status(200).json({ project: project });
   } catch (error) {
     res.status(400).json({ message: error });

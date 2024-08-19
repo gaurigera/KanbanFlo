@@ -1,19 +1,17 @@
 import TaskSheet from "@/components/board/taskSheet";
 import Board from "@/components/board/board";
-import { dummyData } from "@/utils/dummyData";
 import { Button } from "@nextui-org/react";
 import { EditIcon, UserRoundPlusIcon } from "lucide-react";
-
-const fetchProjectDetails = async (projectId: string) => {
-  return dummyData.find((project) => project._id === projectId);
-};
+import { fetchProject } from "@/action/project";
 
 export default async function Home({
   params,
 }: {
   params: { projectId: string };
 }) {
-  const project = await fetchProjectDetails(params.projectId);
+  const {project} = await fetchProject(params.projectId);
+
+  console.log(project);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Project } from "@/utils/dummyData";
+import { Project } from "@/action/dummyData";
 
 export interface Store {
   data: Project;

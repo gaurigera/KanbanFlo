@@ -1,4 +1,4 @@
-import { dummyData } from "@/utils/dummyData";
+import { dummyData } from "@/action/dummyData";
 import { Profile } from "./profile";
 import ProjectForm from "./projectForm";
 import SidebarItems from "./sidebarItems";

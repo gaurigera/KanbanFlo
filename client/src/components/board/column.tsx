@@ -11,7 +11,7 @@ import * as React from "react";
 import TaskItem from "../board/taskItem";
 import { Chip } from "@nextui-org/react";
 import { Dot } from "lucide-react";
-import { Column as ColumnType } from "@/utils/dummyData";
+import { Column as ColumnType } from "@/action/dummyData";
 import TaskSheet from "./taskSheet";
 import { usePathname } from "next/navigation";
 import Link from "next/link";

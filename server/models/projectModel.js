@@ -17,7 +17,6 @@ const ProjectSchema = mongoose.Schema({
       position: Number,
       name: {
         type: String,
-        unique: [true, "Name of the Kanban column should be unique"],
       },
       tasks: [
         {

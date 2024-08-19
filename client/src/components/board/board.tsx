@@ -11,16 +11,15 @@ import Column from "./column";
 import clsx from "clsx";
 import { useProjectStore } from "@/lib/provider/project-provider";
 import React from "react";
-import { Project } from "@/utils/dummyData";
+import { Project } from "@/action/dummyData";
 
 export default function Board(Project: Project) {
   const { data, setData } = useProjectStore((state) => state);
 
   React.useEffect(() => {
     setData(Project);
-  }, [Project, setData]);
-
-  React.useEffect(() => {}, [data]);
+    console.log(data);
+  }, [Project, setData, data]);
 
   const onDragEnd = (result: DropResult): void => {
     const { destination, draggableId, source, type } = result;

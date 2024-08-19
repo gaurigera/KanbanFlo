@@ -1,7 +1,7 @@
 "use client";
 
 import { Button, Input } from "@nextui-org/react";
-import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 import React from "react";
 import clsx from "clsx";
 import Selector, { Item } from "../task/status";
@@ -14,31 +14,14 @@ import {
 } from "lucide-react";
 import Comment from "../task/comment";
 import DatePicker from "../task/date-Picker";
-import { dummyData, Task } from "@/utils/dummyData";
+import { Task } from "@/action/dummyData";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getTask } from "@/action/task";
 
 interface AddTaskItemProps {
   title?: string;
   className?: String;
   children?: React.ReactNode;
-}
-
-function findTaskById(taskId: string): Task | undefined {
-  // Iterate through each project
-  for (const project of dummyData) {
-    // Iterate through each column in the project
-    if (project.columns) {
-      for (const column of project.columns) {
-        // Find the task with the given ID in the column's tasks
-        const task = column.tasks.find((task: Task) => task._id === taskId);
-        if (task) {
-          return task;
-        }
-      }
-    }
-  }
-
-  return undefined;
 }
 
 export default function TaskSheet(task: AddTaskItemProps) {
@@ -50,9 +33,16 @@ export default function TaskSheet(task: AddTaskItemProps) {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
-    if (searchParams.has("taskId")) {
-      const result = findTaskById(searchParams.get("taskId")!!);
+    async function fetchTask() {
+      const result = await getTask(searchParams.get("taskId"));
+
+      console.log(result);
+
       setTaskData(result);
+    }
+
+    if (searchParams.has("taskId")) {
+      fetchTask();
     }
   }, [searchParams]);
 
@@ -81,51 +71,57 @@ export default function TaskSheet(task: AddTaskItemProps) {
           </Button>
         )}
       </SheetTrigger>
-      <SheetContent className="flex min-w-[1096px]">
-        <form className="space-y-3 flex-1">
-          <Input label="title" variant="underlined" value={TaskData?.title} />
-          <div className="flex items-center w-full justify-between">
-            <div className="flex gap-1.5">
-              <Loader width={13} />
-              <span>Status</span>
+      <SheetContent className="min-w-[1096px]">
+        <SheetTitle>Task</SheetTitle>
+        <div className="flex">
+          <form className="space-y-3 flex-1">
+            <Input label="title" variant="underlined" value={TaskData?.title} />
+            <div className="flex items-center w-full justify-between">
+              <div className="flex gap-1.5">
+                <Loader width={13} />
+                <span>Status</span>
+              </div>
+              <Selector defaultValue={TaskData?.status} Props={PriorityList} />
             </div>
-            <Selector defaultValue={TaskData?.priority} Props={PriorityList} />
-          </div>
-          <div className="flex items-center w-full justify-between">
-            <div className="flex gap-1.5">
-              <CircleAlert width={13} />
-              <span>Priority</span>
+            <div className="flex items-center w-full justify-between">
+              <div className="flex gap-1.5">
+                <CircleAlert width={13} />
+                <span>Priority</span>
+              </div>
+              <Selector
+                defaultValue={TaskData?.priority}
+                Props={PriorityList}
+              />
             </div>
-            <Selector defaultValue={TaskData?.priority} Props={PriorityList} />
-          </div>
-          <div className="flex items-center w-full justify-between">
-            <div className="flex gap-1">
-              <CirclePower width={13} />
-              <span>Start Date</span>
+            <div className="flex items-center w-full justify-between">
+              <div className="flex gap-1">
+                <CirclePower width={13} />
+                <span>Start Date</span>
+              </div>
+              <DatePicker date={TaskData?.startDate} />
             </div>
-            <DatePicker date={TaskData?.startDate} />
-          </div>
-          <div className="flex items-center w-full justify-between">
-            <div className="flex gap-1">
-              <CalendarCheck width={13} />
-              <span>End Date</span>
+            <div className="flex items-center w-full justify-between">
+              <div className="flex gap-1">
+                <CalendarCheck width={13} />
+                <span>End Date</span>
+              </div>
+              <DatePicker date={TaskData?.endDate} />
             </div>
-            <DatePicker date={TaskData?.endDate} />
-          </div>
-          <div className="flex items-center w-full justify-between">
-            <div className="flex gap-1">
-              <Users width={13} />
-              <span>Assignees</span>
+            <div className="flex items-center w-full justify-between">
+              <div className="flex gap-1">
+                <Users width={13} />
+                <span>Assignees</span>
+              </div>
+              <Selector Props={PriorityList} />
             </div>
-            <Selector Props={PriorityList} />
-          </div>
-        </form>
-        <div className="space-y-1 w-2/3">
-          <h1 className="text-sm text-black/80 italic">Comments</h1>
-          <div className="space-y-3">
-            {TaskData?.comments.map((comment, idx) => (
-              <Comment {...comment} key={idx} />
-            ))}
+          </form>
+          <div className="space-y-1 w-2/3">
+            <h1 className="text-sm text-black/80 italic">Comments</h1>
+            <div className="space-y-3">
+              {TaskData?.comments.map((comment, idx) => (
+                <Comment {...comment} key={idx} />
+              ))}
+            </div>
           </div>
         </div>
       </SheetContent>

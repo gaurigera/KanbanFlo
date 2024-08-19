@@ -6,7 +6,7 @@ interface LoginValues {
 }
 
 import {PasswordInput} from "@/components/ui/passwordInput";
-import saveUserTokens from "@/utils/auth/saveUserToken";
+import saveUserTokens from "@/action/auth/saveUserToken";
 import { Button, Input, Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";

@@ -66,9 +66,9 @@ export default function TaskItem(Task: DraggableTaskProps) {
             <Chip
               className={clsx(
                 "text-xs p-0",
-                Task.priority === "Low" && " bg-success-100/35 text-green-600",
-                Task.priority === "Medium" && "bg-warning-50 text-yellow-800",
-                Task.priority === "High" && "bg-red-500/10 && text-red-900"
+                Task.priority === "LOW" && " bg-success-100/35 text-green-600",
+                Task.priority === "MEDIUM" && "bg-warning-50 text-yellow-800",
+                Task.priority === "HIGH" && "bg-red-500/10 && text-red-900"
               )}
             >
               {Task.priority}
