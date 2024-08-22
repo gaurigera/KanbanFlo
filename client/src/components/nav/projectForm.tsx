@@ -1,11 +1,13 @@
 "use client";
 
+import { addProject } from "@/action/project";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 export default function ProjectForm() {
   const [showInput, setShowInput] = React.useState(false);
-  const [projects, setProjects] = React.useState<string[]>([]);
   const [inputValue, setInputValue] = React.useState("");
+  const router = useRouter()
 
   const handleClick = () => {
     setShowInput(true);
@@ -28,8 +30,12 @@ export default function ProjectForm() {
     setShowInput(false)
   };
 
-  const saveProject = () => {
-    setProjects((prev) => [...prev, inputValue.trim()]);
+  const saveProject = async () => {
+    const result = await addProject(inputValue);
+    if (result.success) {
+      router.push(result.projectId);
+      router.refresh()
+    }
     setShowInput(false);
     setInputValue("")
   };
@@ -41,9 +47,6 @@ export default function ProjectForm() {
         <button onClick={handleClick}>+</button>
       </div>
       <>
-        {projects.map((project: string, idx: number) => {
-          return <p key={idx}>{project}</p>;
-        })}
         {showInput && (
           <input
             autoFocus

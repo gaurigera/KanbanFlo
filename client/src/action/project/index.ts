@@ -26,16 +26,19 @@ export const getAllProjects = async () => {
   return data;
 };
 
-export const addProject = async (title: string) => {
+export const addProject = async (name: string) => {
   const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/project`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      title: title,
+      name,
     }),
   });
 
-  return result;
+  const data = await result.json();
+  console.log(data);
+  
+  return data;
 };

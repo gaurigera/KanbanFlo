@@ -26,7 +26,7 @@ const createProject = expressAsyncHandler(async (req, res) => {
     ];
 
     await project.save();
-    res.status(200).json({ success: true, message: "Done" });
+    res.status(200).json({ success: true, projectId: project._id });
   } catch (error) {
     res.status(400).json({ success: false, message: error });
   }
@@ -251,5 +251,5 @@ module.exports = {
   addCollaborators,
   removeCollaborators,
   getCollaborators,
-  getProjects
+  getProjects,
 };
