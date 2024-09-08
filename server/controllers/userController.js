@@ -1,7 +1,27 @@
 const expressAsyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const { REFRESH_TOKEN_COOKIE } = require("../constants");
+
+const generateAccessAndRefereshTokens = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    const accessToken = user.generateAccessToken();
+    const refreshToken = user.generateRefreshToken();
+
+    user.refreshToken = refreshToken;
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new Error("");
+  }
+};
+
+const refreshAccessToken = expressAsyncHandler(async (req, res) => {
+  
+});
+
 /**
  * @desc Get user info
  * @route GET /api/user/currentUser
@@ -35,22 +55,13 @@ const loginUser = expressAsyncHandler(async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const payload = {
-      user: {
-        name: user.name,
-        email: user.email,
-        id: user.id,
-      },
-    };
+    const tokens = await generateAccessAndRefereshTokens(user._id);
 
-    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "1m",
-    });
-
-    res.status(200).json({ accessToken });
+    res.cookie(REFRESH_TOKEN_COOKIE, tokens.refreshToken);
+    res.status(200).json({ success: true, token: tokens.accessToken });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 
@@ -80,24 +91,16 @@ const registerUser = expressAsyncHandler(async (req, res) => {
     username,
     password: hashedPass,
   });
-  
-  if (user) {
-    const payload = {
-      user: {
-        name: user.name,
-        email: user.email,
-        id: user.id,
-      },
-    };
 
-    const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "1m",
-    });
+  if (user) {
+    const tokens = await generateAccessAndRefereshTokens(user._id);
+
+    res.cookie(REFRESH_TOKEN_COOKIE, tokens.refreshToken);
+    res.status(200).json({ success: true, token: tokens.accessToken });
 
     res.status(201).json({
-      _id: user.id,
-      email: user.email,
-      accessToken,
+      success: true,
+      token: tokens.accessToken,
     });
   } else {
     res.status(400);

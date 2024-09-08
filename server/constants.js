@@ -3,7 +3,7 @@ exports.constants = {
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
   NOT_FOUND: 404,
-  SERVER_ERROR: 500
+  SERVER_ERROR: 500,
 };
 
 exports.ROLES = {
@@ -22,5 +22,14 @@ exports.PRIORITY = {
 exports.THEMES = {
   purple: "purple",
   yellow: "yellow",
-  blue: "blue"
-}
+  blue: "blue",
+};
+
+exports.REFRESH_TOKEN_OPTION = {
+  sameSite: "None",
+  secure: true,
+  httpOnly: true,
+  maxAge: 24 * 60 * 60 * 1000,
+};
+
+exports.REFRESH_TOKEN_COOKIE = "tkn"
