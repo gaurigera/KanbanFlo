@@ -2,6 +2,7 @@ const expressAsyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const { REFRESH_TOKEN_COOKIE } = require("../constants");
+const jwt = require("jsonwebtoken");
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -19,7 +20,45 @@ const generateAccessAndRefereshTokens = async (userId) => {
 };
 
 const refreshAccessToken = expressAsyncHandler(async (req, res) => {
-  
+  try {
+    const retrivedRefreshToken = req.cookies.tkn;
+
+    if (!retrivedRefreshToken) {
+      res.status(404).json({ success: false, message: "No refresh token!" });
+    }
+
+    const decodedToken = jwt.verify(
+      retrivedRefreshToken,
+      process.env.REFRESH_TOKEN_SECRET
+    );
+
+    const user = await User.findById(decodedToken?._id);
+
+    if (!user) {
+      res.status(403).json({ success: false, message: "Invalid!" });
+    }
+
+    if (retrivedRefreshToken !== user.refreshToken) {
+      res.status(401).json({ success: false, message: "Invalid!" });
+    }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefereshTokens(
+      user._id
+    );
+
+    return res
+      .status(200)
+      .cookie(REFRESH_TOKEN_COOKIE, refreshToken, {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiry for 7 days
+        sameSite: "Strict",
+      })
+      .json({ accessToken });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 });
 
 /**
@@ -27,8 +66,18 @@ const refreshAccessToken = expressAsyncHandler(async (req, res) => {
  * @route GET /api/user/currentUser
  */
 const getUserInfo = expressAsyncHandler(async (req, res) => {
-  const user = await User.find();
-  res.status(200).json(user);
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      res.status(403).json({ success: false, message: "Invalid!" });
+    }
+
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    // console.log(error);
+    res.sendStatus(500);
+  }
 });
 
 /**
@@ -57,8 +106,15 @@ const loginUser = expressAsyncHandler(async (req, res) => {
 
     const tokens = await generateAccessAndRefereshTokens(user._id);
 
-    res.cookie(REFRESH_TOKEN_COOKIE, tokens.refreshToken);
-    res.status(200).json({ success: true, token: tokens.accessToken });
+    res
+      .status(200)
+      .cookie(REFRESH_TOKEN_COOKIE, tokens.refreshToken, {
+        httpOnly: true,
+        // secure: true,
+        expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiry for 7 days
+        sameSite: "Strict",
+      })
+      .json({ success: true, token: tokens.accessToken });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, message: "Internal server error" });
@@ -110,4 +166,16 @@ const registerUser = expressAsyncHandler(async (req, res) => {
   res.json({ message: "Register User" });
 });
 
-module.exports = { getUserInfo, loginUser, registerUser };
+const logoutUser = expressAsyncHandler(async (req, res) => {
+  if (req.cookies.tkn) {
+    res.cookie(REFRESH_TOKEN_COOKIE, "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(0),
+      sameSite: "Strict",
+    });
+  }
+  res.sendStatus(304);
+});
+
+module.exports = { getUserInfo, loginUser, registerUser, refreshAccessToken, logoutUser };
