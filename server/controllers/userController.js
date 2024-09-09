@@ -105,14 +105,16 @@ const loginUser = expressAsyncHandler(async (req, res) => {
     }
 
     const tokens = await generateAccessAndRefereshTokens(user._id);
-
+    
     res
       .status(200)
       .cookie(REFRESH_TOKEN_COOKIE, tokens.refreshToken, {
         httpOnly: true,
         // secure: true,
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiry for 7 days
-        sameSite: "Strict",
+        // sameSite: "Strict",
+        sameSite: "Lax",
+        path: "/", 
       })
       .json({ success: true, token: tokens.accessToken });
   } catch (error) {

@@ -15,7 +15,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 const corsOptions = {
-  origin: "http://localhost:3000", // Replace with frontend's origin
+  origin: "http://localhost:3000",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Enable credentials (cookies, authorization headers)
 };
